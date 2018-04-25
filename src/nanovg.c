@@ -2382,7 +2382,16 @@ static void nvg__flushTextTexture(NVGcontext* ctx)
 			int y = dirty[1];
 			int w = dirty[2] - dirty[0];
 			int h = dirty[3] - dirty[1];
-			ctx->params.renderUpdateTexture(ctx->params.userPtr, fontImage, x,y, w,h, data);
+			unsigned char* subData = malloc(w*h);
+			for (int j = 0; j < h; ++j)
+			{
+				for (int i = 0; i < w; ++i)
+				{
+					subData[i+j*w] = data[(x+i)+(y+j)*iw];
+				}
+			}
+			ctx->params.renderUpdateTexture(ctx->params.userPtr, fontImage, x,y, w,h, subData);
+			free(subData);
 		}
 	}
 }
